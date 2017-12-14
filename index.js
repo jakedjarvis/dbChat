@@ -57,12 +57,17 @@ router.get('/messages', function(req, res) {
             res.sendStatus(400);
             return console.error(err);
         }
-        else {
+       else {
             console.log(messageList);
 
             res.json(messageList);
         }
     });
+});
+
+router.delete('/messages', function(req, res, next) {
+    console.log("Deleting all messages in DB");
+    db.dropDatabase();
 });
 
 io.on('connection', function(socket){

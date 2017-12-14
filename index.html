@@ -15,6 +15,7 @@
     </style>
   </head>
   <body>
+    <div id="deleteMessages"></div>
     <ul id="messages"></ul>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
@@ -22,15 +23,48 @@
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
+
+        $("#deleteMessages").click(function() {
+           console.log("Calling deleteMessages.click");
+
+           var url = "messages";
+           $.ajax({
+               url:url,
+               type: "DELETE",
+               contentType: "application/json; charset=utf-8",
+               success: function(data) {
+                    console.log("Deleted ajax called");
+                    console.log(data);
+               }
+            })
+        });
+    
       $(function () {
         var socket = io();
 
         //***get all previous comments
-
+        
+        $.getJSON('messages', function(data) {
+            console.log(data);
+            
+            
+            data.forEach(function(element){
+                $('#messages').append($('<li>').text(element.Message));
+                window.scrollTo(0,document.body.scrollHeight);
+            });
+        });
 
         $('form').submit(function(){
 
           //***post the message here
+            console.log("about to post");
+            
+            console.log($("#m").val());
+
+            $.post('messages', {Name: "", Message: $("#m").val()},function(data) {
+                
+                console.log(data);
+            });
             
           socket.emit('chat message', $('#m').val());
           $('#m').val('');
